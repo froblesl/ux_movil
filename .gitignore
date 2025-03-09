@@ -1,0 +1,26 @@
+# Directorios de compilación y caché
+/.gradle
+/.idea
+/build
+/.cxx
+/local.properties
+/.settings
+/.externalNativeBuild
+/.vs
+*.iml
+*.hprof
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de usuario de IntelliJ
+.idea/workspace.xml
+.idea/libraries
+.idea/modules.xml
+.idea/misc.xml
+*.iws
+
+# Archivos de Android Studio
+.gradle/
+captures/
