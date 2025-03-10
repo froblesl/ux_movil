@@ -53,4 +53,25 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(platform("androidx.compose:compose-bom:2024.04.01")) // BOM de Compose
+
+    // Material 3
+    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
+
+    // Compose UI
+    implementation("androidx.compose.ui:ui:1.5.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.0")
+
+    // Lifecycle y ViewModel
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+
+    // Navegación en Compose
+    implementation("androidx.navigation:navigation-compose:2.7.2")
+
+    // Para probar vistas previas en Compose
+    debugImplementation("androidx.compose.ui:ui-tooling:1.5.0")
 }
+
