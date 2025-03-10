@@ -1,5 +1,5 @@
 package com.example.movil.ui.screens
-
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,6 +16,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
 
     Scaffold { innerPadding ->
         Column(
@@ -26,6 +27,12 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                text = "Iniciar Sesión",
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedTextField(
                 value = username,
@@ -44,15 +51,23 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 singleLine = true
             )
 
+            // Mensaje de error si los datos son incorrectos
+            if (showError) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Usuario o contraseña incorrectos", color = MaterialTheme.colorScheme.error)
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Botón "Iniciar Sesión"
             Button(
                 onClick = {
-                    viewModel.username.value = username
-                    viewModel.password.value = password
-                    viewModel.login()
-                    if (viewModel.isLoggedIn.value) {
-                        navController.navigate("home")
+                    if (viewModel.login(username, password)) {
+                        navController.navigate("dashboard") {
+                            popUpTo("login") { inclusive = true } // Evita que el usuario regrese al login
+                        }
+                    } else {
+                        showError = true
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -62,11 +77,14 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Botón "Registrarse"
             OutlinedButton(
-                onClick = {
-                    navController.navigate("register") // Nueva pantalla para registro
-                },
-                modifier = Modifier.fillMaxWidth()
+                onClick = { navController.navigate("register") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary, // Fondo del botón
+                    contentColor = Color.White // Color del texto
+                )
             ) {
                 Text("Registrarse")
             }
