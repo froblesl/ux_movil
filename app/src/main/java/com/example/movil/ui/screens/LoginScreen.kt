@@ -1,5 +1,5 @@
 package com.example.movil.ui.screens
-
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -80,7 +80,11 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             // Botón "Registrarse"
             OutlinedButton(
                 onClick = { navController.navigate("register") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary, // Fondo del botón
+                    contentColor = Color.White // Color del texto
+                )
             ) {
                 Text("Registrarse")
             }
