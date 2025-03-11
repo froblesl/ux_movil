@@ -32,14 +32,17 @@ fun DashboardScreen(navController: NavController, viewModel: DashboardViewModel 
 
     Scaffold(
         topBar = {
-            DashboardTopBar(
-                searchQuery = searchQuery,
-                onSearchChange = { viewModel.onSearchQueryChanged(it) }
-            )
+            Column { // ✅ Agregamos un espacio antes del TopAppBar
+                Spacer(modifier = Modifier.height(24.dp)) // Espaciado antes del TopBar
+                DashboardTopBar(
+                    searchQuery = searchQuery,
+                    onSearchChange = { viewModel.onSearchQueryChanged(it) }
+                )
+            }
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        Box(
+    Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -73,7 +76,7 @@ fun DashboardScreen(navController: NavController, viewModel: DashboardViewModel 
 
             FloatingActionButton(
                 onClick = { navController.navigate("add_alarm") },
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier
                     .align(Alignment.BottomCenter) // Centrado en la parte inferior
                     .padding(bottom = 32.dp) // Ajustar el espaciado
@@ -117,6 +120,8 @@ fun DashboardTopBar(searchQuery: String, onSearchChange: (String) -> Unit) {
 
 @Composable
 fun AlarmCard(alarm: Alarm, navController: NavController, viewModel: DashboardViewModel) {
+    var isAlarmEnabled by remember { mutableStateOf(true) } // Estado local del switch
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -131,11 +136,18 @@ fun AlarmCard(alarm: Alarm, navController: NavController, viewModel: DashboardVi
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = alarm.title, style = MaterialTheme.typography.bodyLarge)
-                Text(text = "${alarm.hour}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                Text(text = alarm.hour, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             }
-            IconButton(onClick = { viewModel.removeAlarm(alarm) }) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "Eliminar")
-            }
+
+            // ✅ Switch para activar/desactivar alarma
+            Switch(
+                checked = isAlarmEnabled,
+                onCheckedChange = { isAlarmEnabled = it },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.primary,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            )
         }
     }
 }

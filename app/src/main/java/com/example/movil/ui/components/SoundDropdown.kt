@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SoundDropdown(selectedSound: String, onSoundSelected: (String) -> Unit) {
-    val sounds = listOf("Sonido 1", "Sonido 2", "Sonido 3", "Sonido 4")
+    val sounds = listOf("Verano", "Otoño", "Invierno", "Primavera")
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
@@ -20,8 +20,19 @@ fun SoundDropdown(selectedSound: String, onSoundSelected: (String) -> Unit) {
             onValueChange = {},
             readOnly = true,
             label = { Text("Sonido") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(), // ✅ Corrige el problema de visualización
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                cursorColor = MaterialTheme.colorScheme.primary
+            )
         )
+
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }

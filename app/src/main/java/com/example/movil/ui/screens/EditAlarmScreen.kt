@@ -1,9 +1,9 @@
 package com.example.movil.ui.screens
-import com.example.movil.ui.components.SoundDropdown
-import com.example.movil.ui.components.TimePickerDisplay
+
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,24 +13,27 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.movil.viewmodel.Alarm
 import com.example.movil.viewmodel.DashboardViewModel
+import com.example.movil.ui.components.SoundDropdown
+import com.example.movil.ui.components.TimePickerDisplay
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddAlarmScreen(navController: NavController, viewModel: DashboardViewModel) {
-
+fun EditAlarmScreen(navController: NavController, viewModel: DashboardViewModel, alarmId: Int) {
     val context = LocalContext.current
 
-    var alarmTitle by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var selectedSound by remember { mutableStateOf("Verano") }
-    var time by remember { mutableStateOf(LocalTime.now()) }
+    // Buscar la alarma en la lista de alarmas
+    val alarm = viewModel.alarms.find { it.id == alarmId } ?: return
+
+    var alarmTitle by remember { mutableStateOf(alarm.title) }
+    var description by remember { mutableStateOf(alarm.description) }
+    var selectedSound by remember { mutableStateOf(alarm.sound) }
+    var time by remember { mutableStateOf(LocalTime.parse(alarm.hour, DateTimeFormatter.ofPattern("hh:mm a"))) }
 
     val timeFormatter = DateTimeFormatter.ofPattern("hh:mm a")
 
-    Scaffold(
-    ) { innerPadding ->
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -45,19 +48,8 @@ fun AddAlarmScreen(navController: NavController, viewModel: DashboardViewModel) 
                 value = alarmTitle,
                 onValueChange = { alarmTitle = it },
                 label = { Text("Nombre de la alarma") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.medium),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface, // ✅ Fondo cuando está seleccionado
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface, // ✅ Fondo cuando no está seleccionado
-                    disabledContainerColor = MaterialTheme.colorScheme.surface, // ✅ Fondo cuando está deshabilitado
-                    cursorColor = MaterialTheme.colorScheme.primary, // ✅ Color del cursor
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface, // ✅ Color del texto cuando está enfocado
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant // ✅ Color del texto cuando no está enfocado
-                )
+                modifier = Modifier.fillMaxWidth()
             )
-
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -65,11 +57,6 @@ fun AddAlarmScreen(navController: NavController, viewModel: DashboardViewModel) 
             TimePickerDisplay(selectedTime = time) { selectedTime -> time = selectedTime }
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Descripción",
-                style = MaterialTheme.typography.headlineMedium
-            )
 
             // Descripción
             OutlinedTextField(
@@ -92,7 +79,7 @@ fun AddAlarmScreen(navController: NavController, viewModel: DashboardViewModel) 
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 OutlinedButton(
-                    onClick = { navController.popBackStack() }, // Cancela y vuelve al Dashboard
+                    onClick = { navController.popBackStack() }, // Cancela y vuelve sin guardar
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("Cancelar")
@@ -103,8 +90,9 @@ fun AddAlarmScreen(navController: NavController, viewModel: DashboardViewModel) 
                 Button(
                     onClick = {
                         if (alarmTitle.isNotBlank() && description.isNotBlank()) {
-                            viewModel.addAlarm(alarmTitle, description, time.format(timeFormatter), selectedSound)
-                            Toast.makeText(context, "Alarma añadida", Toast.LENGTH_SHORT).show()
+                            // Actualizar la alarma en el ViewModel
+                            viewModel.updateAlarm(alarmId, alarmTitle, description, time.format(timeFormatter), selectedSound)
+                            Toast.makeText(context, "Alarma actualizada", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()
                         } else {
                             Toast.makeText(context, "Completa todos los campos", Toast.LENGTH_SHORT).show()
@@ -112,33 +100,9 @@ fun AddAlarmScreen(navController: NavController, viewModel: DashboardViewModel) 
                     },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Agregar")
+                    Text("Guardar")
                 }
             }
         }
     }
 }
-
-
-@Composable
-fun TimePicker(selectedTime: LocalTime, onTimeSelected: (LocalTime) -> Unit) {
-    val context = LocalContext.current
-
-    Button(
-        onClick = {
-            val timePickerDialog = android.app.TimePickerDialog(
-                context,
-                { _, hourOfDay, minute ->
-                    onTimeSelected(LocalTime.of(hourOfDay, minute))
-                },
-                selectedTime.hour,
-                selectedTime.minute,
-                false
-            )
-            timePickerDialog.show()
-        }
-    ) {
-        Text("Hora: ${selectedTime.format(DateTimeFormatter.ofPattern("hh:mm a"))}")
-    }
-}
-

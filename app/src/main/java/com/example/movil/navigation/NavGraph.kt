@@ -39,6 +39,14 @@ fun AppNavGraph(navController: NavHostController) {
             val viewModel = androidx.lifecycle.viewmodel.compose.viewModel<DashboardViewModel>()
             AddAlarmScreen(navController, viewModel)
         }
+        composable(
+            route = "edit_alarm/{alarmId}",
+            arguments = listOf(navArgument("alarmId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val alarmId = backStackEntry.arguments?.getInt("alarmId") ?: -1
+            EditAlarmScreen(navController, viewModel = androidx.lifecycle.viewmodel.compose.viewModel(), alarmId)
+        }
+
 
 
 
