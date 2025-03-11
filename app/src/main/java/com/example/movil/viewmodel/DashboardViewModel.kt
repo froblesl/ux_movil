@@ -45,4 +45,12 @@ class DashboardViewModel : ViewModel() {
         _alarms.remove(alarm)
         onSearchQueryChanged(searchQuery.value) // Actualiza la búsqueda
     }
+
+    fun updateAlarm(id: Int, newTitle: String, newDescription: String, newHour: String, newSound: String) {
+        val index = _alarms.indexOfFirst { it.id == id }
+        if (index != -1) {
+            _alarms[index] = Alarm(id, newTitle, newDescription, newHour, newSound)
+            onSearchQueryChanged(searchQuery.value) // Actualizar la búsqueda
+        }
+    }
 }

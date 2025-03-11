@@ -34,7 +34,14 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                 value = name,
                 onValueChange = { name = it },
                 label = { Text("Nombre") },
-                singleLine = true
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    cursorColor = MaterialTheme.colorScheme.primary
+                )
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -43,7 +50,14 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Correo Electrónico") },
-                singleLine = true
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    cursorColor = MaterialTheme.colorScheme.primary
+                )
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -52,7 +66,14 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                 value = username,
                 onValueChange = { username = it },
                 label = { Text("Usuario") },
-                singleLine = true
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    cursorColor = MaterialTheme.colorScheme.primary
+                )
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -62,7 +83,14 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                 onValueChange = { password = it },
                 label = { Text("Contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
-                singleLine = true
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    cursorColor = MaterialTheme.colorScheme.primary
+                )
             )
 
             // Mostrar mensaje de error si hay un problema

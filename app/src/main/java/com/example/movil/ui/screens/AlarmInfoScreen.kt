@@ -3,6 +3,8 @@ package com.example.movil.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,10 +14,22 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.movil.viewmodel.Alarm
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlarmInfoScreen(navController: NavController, alarm: Alarm) {
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) { // ✅ Vuelve al Dashboard
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Volver")
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -66,4 +80,3 @@ fun AlarmInfoScreen(navController: NavController, alarm: Alarm) {
         }
     }
 }
-

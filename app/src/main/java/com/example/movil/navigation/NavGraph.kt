@@ -7,11 +7,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.movil.ui.screens.AlarmInfoScreen
-import com.example.movil.ui.screens.DashboardScreen
-import com.example.movil.ui.screens.LoginScreen
-import com.example.movil.ui.screens.RegisterScreen
+import com.example.movil.ui.screens.*
 import com.example.movil.viewmodel.Alarm
+import com.example.movil.viewmodel.DashboardViewModel
 
 
 @Composable
@@ -37,6 +35,20 @@ fun AppNavGraph(navController: NavHostController) {
             val sound = backStackEntry.arguments?.getString("sound") ?: "Ninguno"
             AlarmInfoScreen(navController, Alarm(id, title, description, hour, sound))
         }
+        composable("add_alarm") {
+            val viewModel = androidx.lifecycle.viewmodel.compose.viewModel<DashboardViewModel>()
+            AddAlarmScreen(navController, viewModel)
+        }
+        composable(
+            route = "edit_alarm/{alarmId}",
+            arguments = listOf(navArgument("alarmId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val alarmId = backStackEntry.arguments?.getInt("alarmId") ?: -1
+            EditAlarmScreen(navController, viewModel = androidx.lifecycle.viewmodel.compose.viewModel(), alarmId)
+        }
+
+
+
 
 
 

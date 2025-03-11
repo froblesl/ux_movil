@@ -27,10 +27,6 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Iniciar Sesión",
-                style = MaterialTheme.typography.headlineMedium
-            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -38,7 +34,14 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 value = username,
                 onValueChange = { username = it },
                 label = { Text("Usuario") },
-                singleLine = true
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest, // ✅ Fondo cuando está enfocado
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest, // ✅ Fondo cuando no está enfocado
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest, // ✅ Fondo cuando está deshabilitado
+                    cursorColor = MaterialTheme.colorScheme.primary // ✅ Color del cursor
+                )
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -48,8 +51,17 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 onValueChange = { password = it },
                 label = { Text("Contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
-                singleLine = true
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest, // ✅ Fondo cuando está enfocado
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest, // ✅ Fondo cuando no está enfocado
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest, // ✅ Fondo cuando está deshabilitado
+                    cursorColor = MaterialTheme.colorScheme.primary
+                )
             )
+
+
 
             // Mensaje de error si los datos son incorrectos
             if (showError) {
