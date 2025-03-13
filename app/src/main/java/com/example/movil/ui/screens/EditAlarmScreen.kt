@@ -3,7 +3,6 @@ package com.example.movil.ui.screens
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -11,10 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.movil.viewmodel.Alarm
-import com.example.movil.viewmodel.DashboardViewModel
 import com.example.movil.ui.components.SoundDropdown
 import com.example.movil.ui.components.TimePickerDisplay
+import com.example.movil.viewmodel.DashboardViewModel
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -23,7 +21,6 @@ import java.time.format.DateTimeFormatter
 fun EditAlarmScreen(navController: NavController, viewModel: DashboardViewModel, alarmId: Int) {
     val context = LocalContext.current
 
-    // Buscar la alarma en la lista de alarmas
     val alarm = viewModel.alarms.find { it.id == alarmId } ?: return
 
     var alarmTitle by remember { mutableStateOf(alarm.title) }
@@ -38,48 +35,56 @@ fun EditAlarmScreen(navController: NavController, viewModel: DashboardViewModel,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
+                .padding(16.dp)
+                .navigationBarsPadding(),
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                OutlinedTextField(
+                    value = alarmTitle,
+                    onValueChange = { alarmTitle = it },
+                    label = { Text("Nombre de la alarma") },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-            // Nombre de la alarma
-            OutlinedTextField(
-                value = alarmTitle,
-                onValueChange = { alarmTitle = it },
-                label = { Text("Nombre de la alarma") },
-                modifier = Modifier.fillMaxWidth()
-            )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                DaysOfWeekSelector()
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                TimePickerDisplay(selectedTime = time) { selectedTime -> time = selectedTime }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(text = "Descripción", style = MaterialTheme.typography.headlineMedium)
+
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Descripción") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(1.dp))
+
+                SoundDropdown(selectedSound) { selectedSound = it }
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // **Time Picker visible en pantalla**
-            TimePickerDisplay(selectedTime = time) { selectedTime -> time = selectedTime }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Descripción
-            OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
-                label = { Text("Descripción") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Selector de sonido
-            SoundDropdown(selectedSound) { selectedSound = it }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Botones de acción
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 OutlinedButton(
-                    onClick = { navController.popBackStack() }, // Cancela y vuelve sin guardar
+                    onClick = { navController.popBackStack() },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("Cancelar")
@@ -90,7 +95,6 @@ fun EditAlarmScreen(navController: NavController, viewModel: DashboardViewModel,
                 Button(
                     onClick = {
                         if (alarmTitle.isNotBlank() && description.isNotBlank()) {
-                            // Actualizar la alarma en el ViewModel
                             viewModel.updateAlarm(alarmId, alarmTitle, description, time.format(timeFormatter), selectedSound)
                             Toast.makeText(context, "Alarma actualizada", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()

@@ -1,4 +1,5 @@
 package com.example.movil.ui.screens
+
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -37,10 +38,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest, // ✅ Fondo cuando está enfocado
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest, // ✅ Fondo cuando no está enfocado
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest, // ✅ Fondo cuando está deshabilitado
-                    cursorColor = MaterialTheme.colorScheme.primary // ✅ Color del cursor
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    cursorColor = MaterialTheme.colorScheme.primary
                 )
             )
 
@@ -54,14 +55,22 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest, // ✅ Fondo cuando está enfocado
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest, // ✅ Fondo cuando no está enfocado
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest, // ✅ Fondo cuando está deshabilitado
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                     cursorColor = MaterialTheme.colorScheme.primary
                 )
             )
 
+            Spacer(modifier = Modifier.height(8.dp))
 
+            // Botón de "Olvidé mi contraseña"
+            TextButton(
+                onClick = { navController.navigate("forgot_password") }, // Navegación a la pantalla de recuperación
+                modifier = Modifier.align(Alignment.End)
+            ) {
+                Text("¿Olvidaste tu contraseña?", color = MaterialTheme.colorScheme.primary)
+            }
 
             // Mensaje de error si los datos son incorrectos
             if (showError) {
@@ -94,8 +103,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 onClick = { navController.navigate("register") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primary, // Fondo del botón
-                    contentColor = Color.White // Color del texto
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = Color.White
                 )
             ) {
                 Text("Registrarse")

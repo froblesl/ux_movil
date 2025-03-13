@@ -1,7 +1,6 @@
 package com.example.movil.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -11,13 +10,15 @@ import com.example.movil.ui.screens.*
 import com.example.movil.viewmodel.Alarm
 import com.example.movil.viewmodel.DashboardViewModel
 
-
 @Composable
 fun AppNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "login") {
+
         composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
+        composable("forgot_password") { ForgotPasswordScreen(navController) } // ✅ Nueva pantalla
         composable("dashboard") { DashboardScreen(navController) }
+
         composable(
             route = "alarm_info/{id}/{title}/{description}/{hour}/{sound}",
             arguments = listOf(
@@ -35,10 +36,12 @@ fun AppNavGraph(navController: NavHostController) {
             val sound = backStackEntry.arguments?.getString("sound") ?: "Ninguno"
             AlarmInfoScreen(navController, Alarm(id, title, description, hour, sound))
         }
+
         composable("add_alarm") {
             val viewModel = androidx.lifecycle.viewmodel.compose.viewModel<DashboardViewModel>()
             AddAlarmScreen(navController, viewModel)
         }
+
         composable(
             route = "edit_alarm/{alarmId}",
             arguments = listOf(navArgument("alarmId") { type = NavType.IntType })
@@ -46,12 +49,5 @@ fun AppNavGraph(navController: NavHostController) {
             val alarmId = backStackEntry.arguments?.getInt("alarmId") ?: -1
             EditAlarmScreen(navController, viewModel = androidx.lifecycle.viewmodel.compose.viewModel(), alarmId)
         }
-
-
-
-
-
-
-        // Agregar más pantallas aquí
     }
 }

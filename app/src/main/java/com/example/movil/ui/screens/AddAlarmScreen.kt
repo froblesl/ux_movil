@@ -1,4 +1,5 @@
 package com.example.movil.ui.screens
+
 import com.example.movil.ui.components.SoundDropdown
 import com.example.movil.ui.components.TimePickerDisplay
 import android.widget.Toast
@@ -11,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.movil.viewmodel.Alarm
 import com.example.movil.viewmodel.DashboardViewModel
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -19,7 +19,6 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddAlarmScreen(navController: NavController, viewModel: DashboardViewModel) {
-
     val context = LocalContext.current
 
     var alarmTitle by remember { mutableStateOf("") }
@@ -29,70 +28,77 @@ fun AddAlarmScreen(navController: NavController, viewModel: DashboardViewModel) 
 
     val timeFormatter = DateTimeFormatter.ofPattern("hh:mm a")
 
-    Scaffold(
-    ) { innerPadding ->
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
+                .padding(16.dp)
+                .navigationBarsPadding(), // 🔹 Evita que los botones se oculten
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            // Nombre de la alarma
-            OutlinedTextField(
-                value = alarmTitle,
-                onValueChange = { alarmTitle = it },
-                label = { Text("Nombre de la alarma") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.medium),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface, // ✅ Fondo cuando está seleccionado
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface, // ✅ Fondo cuando no está seleccionado
-                    disabledContainerColor = MaterialTheme.colorScheme.surface, // ✅ Fondo cuando está deshabilitado
-                    cursorColor = MaterialTheme.colorScheme.primary, // ✅ Color del cursor
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface, // ✅ Color del texto cuando está enfocado
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant // ✅ Color del texto cuando no está enfocado
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Nombre de la alarma
+                OutlinedTextField(
+                    value = alarmTitle,
+                    onValueChange = { alarmTitle = it },
+                    label = { Text("Nombre de la alarma") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.medium),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                        disabledContainerColor = MaterialTheme.colorScheme.surface,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
-            )
 
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                // Selector de días de la semana
+                DaysOfWeekSelector()
 
-            // **Time Picker visible en pantalla**
-            TimePickerDisplay(selectedTime = time) { selectedTime -> time = selectedTime }
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                // Time Picker
+                TimePickerDisplay(selectedTime = time) { selectedTime -> time = selectedTime }
 
-            Text(
-                text = "Descripción",
-                style = MaterialTheme.typography.headlineMedium
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Descripción
-            OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
-                label = { Text("Descripción") },
-                modifier = Modifier.fillMaxWidth()
-            )
+                // Descripción
+                Text(text = "Descripción", style = MaterialTheme.typography.headlineMedium)
 
-            Spacer(modifier = Modifier.height(16.dp))
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Descripción") },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-            // Selector de sonido
-            SoundDropdown(selectedSound) { selectedSound = it }
+                Spacer(modifier = Modifier.height(1.dp))
 
-            Spacer(modifier = Modifier.height(32.dp))
+                // Selector de sonido
+                SoundDropdown(selectedSound) { selectedSound = it }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp)) // 🔹 Espacio extra antes de los botones
 
             // Botones de acción
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 OutlinedButton(
-                    onClick = { navController.popBackStack() }, // Cancela y vuelve al Dashboard
+                    onClick = { navController.popBackStack() },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("Cancelar")
@@ -119,26 +125,29 @@ fun AddAlarmScreen(navController: NavController, viewModel: DashboardViewModel) 
     }
 }
 
-
 @Composable
-fun TimePicker(selectedTime: LocalTime, onTimeSelected: (LocalTime) -> Unit) {
-    val context = LocalContext.current
+fun DaysOfWeekSelector() {
+    val days = listOf("L", "M", "X", "J", "V", "S", "D")
+    val selectedDays = remember { mutableStateListOf(*List(7) { false }.toTypedArray()) }
 
-    Button(
-        onClick = {
-            val timePickerDialog = android.app.TimePickerDialog(
-                context,
-                { _, hourOfDay, minute ->
-                    onTimeSelected(LocalTime.of(hourOfDay, minute))
-                },
-                selectedTime.hour,
-                selectedTime.minute,
-                false
-            )
-            timePickerDialog.show()
+    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+        days.forEachIndexed { index, day ->
+            val isSelected = selectedDays[index]
+
+            TextButton(
+                onClick = { selectedDays[index] = !selectedDays[index] },
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(
+                        if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                        else MaterialTheme.colorScheme.surface,
+                        shape = MaterialTheme.shapes.medium
+                    )
+            ) {
+                Text(day, color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface)
+            }
+
+            Spacer(modifier = Modifier.width(4.dp))
         }
-    ) {
-        Text("Hora: ${selectedTime.format(DateTimeFormatter.ofPattern("hh:mm a"))}")
     }
 }
-
